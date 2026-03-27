@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Psychologist {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  password    String
+  name        String
+  bio         String?
+  logo        String?
+  price       Float    @default(60)
+  subdomain   String   @unique
+  instagram   String?
+  facebook    String?
+  linkedin    String?
+  website     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  appointments Appointment[]
+  patients     Patient[]
+}
+
+model Patient {
+  id              String   @id @default(cuid())
+  email           String
+  name            String
+  psychologistId  String
+  createdAt       DateTime @default(now())
+
+  psychologist    Psychologist  @relation(fields: [psychologistId], references: [id])
+  appointments    Appointment[]
+}
+
+model Appointment {
+  id              String   @id @default(cuid())
+  date            DateTime
+  duration        Int      @default(50)
+  status          String   @default("pending")
+  paid            Boolean  @default(false)
+  amount          Float
+  psychologistId  String
+  patientId       String
+  createdAt       DateTime @default(now())
+
+  psychologist    Psychologist @relation(fields: [psychologistId], references: [id])
+  patient         Patient      @relation(fields: [patientId], references: [id])
+}
