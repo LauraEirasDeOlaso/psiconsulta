@@ -4,6 +4,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { theme } from "@/styles/theme";
+import { useDashboardStats } from "@/hooks/useDashboardStats";
 
 /**
  * @description Panel principal del psicólogo
@@ -11,6 +12,7 @@ import { theme } from "@/styles/theme";
 export default function DashboardPage() {
   const { psychologist, logout, isLoading } = useAuth();
   const router = useRouter();
+  const { stats } = useDashboardStats();
 
   // Redirigir si no está autenticado
   useEffect(() => {
@@ -87,10 +89,10 @@ export default function DashboardPage() {
           marginBottom: theme.spacing.xxl,
         }}>
           {[
-            { label: "Pacientes", value: "1", icon: "👥", color: theme.colors.sage300 },
-            { label: "Citas hoy", value: "0", icon: "📅", color: theme.colors.accent400 },
-            { label: "Este mes", value: "65€", icon: "💶", color: theme.colors.sage400 },
-            { label: "Pendiente", value: "0€", icon: "⏳", color: theme.colors.warning },
+            { label: "Pacientes", value: String(stats?.totalPatients ?? 0), icon: "👥", color: theme.colors.sage300 },
+            { label: "Citas hoy", value: String(stats?.todayAppointments ?? 0), icon: "📅", color: theme.colors.accent400 },
+            { label: "Este mes", value: `${stats?.monthlyRevenue ?? 0}€`, icon: "💶", color: theme.colors.sage400 },
+            { label: "Pendiente", value: `${stats?.pendingRevenue ?? 0}€`, icon: "⏳", color: theme.colors.warning },
           ].map(stat => (
             <div key={stat.label} style={{
               background: theme.colors.surface,

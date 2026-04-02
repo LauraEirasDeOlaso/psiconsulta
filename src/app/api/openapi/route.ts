@@ -342,6 +342,17 @@ export async function GET() {
           },
         },
       },
+      "/api/dashboard/stats": {
+        get: {
+          summary: "Estadísticas del dashboard",
+          tags: ["Dashboard"],
+          security: [{ bearerAuth: [] }],
+          responses: {
+            200: { description: "Estadísticas del psicólogo" },
+            401: { description: "No autorizado" },
+          },
+        },
+      },
     },
   });
 }
