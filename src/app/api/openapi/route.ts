@@ -86,6 +86,51 @@ export async function GET() {
           },
         },
       },
+      "/api/psychologist/profile": {
+        get: {
+          summary: "Obtener perfil del psicólogo",
+          tags: ["Psychologist"],
+          security: [{ bearerAuth: [] }],
+          responses: {
+            200: { description: "Perfil del psicólogo" },
+            401: { description: "No autorizado" },
+          },
+        },
+        put: {
+          summary: "Actualizar perfil del psicólogo",
+          tags: ["Psychologist"],
+          security: [{ bearerAuth: [] }],
+          requestBody: {
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    name: { type: "string", example: "José Martín" },
+                    bio: {
+                      type: "string",
+                      example: "Psicólogo clínico con 4 años de experiencia",
+                    },
+                    price: { type: "number", example: 65 },
+                    instagram: { type: "string", example: "@josepsicologo" },
+                    facebook: { type: "string", example: "josepsicologo" },
+                    linkedin: { type: "string", example: "jose-martin" },
+                    website: {
+                      type: "string",
+                      example: "https://josepsicologo.com",
+                    },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            200: { description: "Perfil actualizado correctamente" },
+            401: { description: "No autorizado" },
+            500: { description: "Error interno del servidor" },
+          },
+        },
+      },
     },
   });
 }

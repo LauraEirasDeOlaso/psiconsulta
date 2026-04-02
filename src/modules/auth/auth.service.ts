@@ -177,3 +177,60 @@ export async function getMe(request: Request) {
     return NextResponse.json({ error: "Token inválido" }, { status: 401 });
   }
 }
+
+/**
+ * @description Actualiza el perfil del psicólogo autenticado
+ */
+export async function updateProfile(request: Request) {
+  try {
+    // Extraer token del header
+    const token = request.headers.get('Authorization')?.replace('Bearer ', '')
+
+    // Decodificar token
+    const decoded = jwt.verify(token!, process.env.JWT_SECRET!) as {
+      id: string
+    }
+
+    // Extraer datos del body
+    const { name, bio, price, instagram, facebook, linkedin, website } =
+      await request.json()
+
+    // Actualizar psicólogo en la base de datos
+    const psychologist = await prisma.psychologist.update({
+      where: { id: decoded.id },
+      data: {
+        name,
+        bio,
+        price,
+        instagram,
+        facebook,
+        linkedin,
+        website,
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        subdomain: true,
+        bio: true,
+        logo: true,
+        price: true,
+        instagram: true,
+        facebook: true,
+        linkedin: true,
+        website: true,
+      }
+    })
+
+    return NextResponse.json({
+      ok: true,
+      data: psychologist
+    })
+
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Error al actualizar perfil' },
+      { status: 500 }
+    )
+  }
+}
