@@ -112,6 +112,7 @@ export default function DashboardPage() {
           {[
             { label: "Ver pacientes", href: "/dashboard/patients", icon: "👥" },
             { label: "Ver citas", href: "/dashboard/appointments", icon: "📅" },
+            { label: "Mi perfil", href: "/dashboard/profile", icon: "👤" },
           ].map(link => (
             <button
               key={link.label}

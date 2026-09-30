@@ -15,16 +15,17 @@ model Psychologist {
   bio         String?
   logo        String?
   price       Float    @default(60)
+  freeConsultation Boolean @default(true)
   subdomain   String   @unique
-  instagram   String?
-  facebook    String?
-  linkedin    String?
-  website     String?
+  specialties  String[]
+  phone        String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   appointments Appointment[]
   patients     Patient[]
+  plans Plan[]
+  socialLinks SocialLink[]
 }
 
 model Patient {
@@ -51,4 +52,24 @@ model Appointment {
 
   psychologist    Psychologist @relation(fields: [psychologistId], references: [id])
   patient         Patient      @relation(fields: [patientId], references: [id])
+}
+
+model Plan {
+  id             String       @id @default(cuid())
+  name           String
+  price          Float?
+  description    String?
+  features       String[]
+  highlighted    Boolean      @default(false)
+  order          Int          @default(0)
+  psychologistId String
+  psychologist   Psychologist @relation(fields: [psychologistId], references: [id])
+}
+
+model SocialLink {
+  id             String       @id @default(cuid())
+  platform       String
+  url            String
+  psychologistId String
+  psychologist   Psychologist @relation(fields: [psychologistId], references: [id])
 }

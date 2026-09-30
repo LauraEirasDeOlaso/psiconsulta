@@ -153,12 +153,25 @@ export async function getMe(request: Request) {
         subdomain: true,
         bio: true,
         logo: true,
+        phone: true,
         price: true,
-        instagram: true,
-        facebook: true,
-        linkedin: true,
-        website: true,
+        specialties: true,
         createdAt: true,
+        plans: {
+          select: {
+            id: true,
+            name: true,
+            price: true,
+            description: true,
+            features: true,
+            highlighted: true,
+            order: true,
+          },
+          orderBy: { order: "asc" },
+        },
+        socialLinks: {
+          select: { id: true, platform: true, url: true },
+        },
       },
     });
 
@@ -184,16 +197,16 @@ export async function getMe(request: Request) {
 export async function updateProfile(request: Request) {
   try {
     // Extraer token del header
-    const token = request.headers.get('Authorization')?.replace('Bearer ', '')
+    const token = request.headers.get("Authorization")?.replace("Bearer ", "");
 
     // Decodificar token
     const decoded = jwt.verify(token!, process.env.JWT_SECRET!) as {
-      id: string
-    }
+      id: string;
+    };
 
     // Extraer datos del body
-    const { name, bio, price, instagram, facebook, linkedin, website } =
-      await request.json()
+    const { name, bio, phone, specialties } =
+      await request.json();
 
     // Actualizar psicólogo en la base de datos
     const psychologist = await prisma.psychologist.update({
@@ -201,11 +214,8 @@ export async function updateProfile(request: Request) {
       data: {
         name,
         bio,
-        price,
-        instagram,
-        facebook,
-        linkedin,
-        website,
+        phone,
+        specialties
       },
       select: {
         id: true,
@@ -214,23 +224,19 @@ export async function updateProfile(request: Request) {
         subdomain: true,
         bio: true,
         logo: true,
-        price: true,
-        instagram: true,
-        facebook: true,
-        linkedin: true,
-        website: true,
-      }
-    })
+        phone: true,
+        specialties: true,
+      },
+    });
 
     return NextResponse.json({
       ok: true,
-      data: psychologist
-    })
-
+      data: psychologist,
+    });
   } catch (error) {
     return NextResponse.json(
-      { error: 'Error al actualizar perfil' },
-      { status: 500 }
-    )
+      { error: "Error al actualizar perfil" },
+      { status: 500 },
+    );
   }
 }
